@@ -1,19 +1,20 @@
 import React from "react";
 import styled from "styled-components";
-import Secondarybutton from "./SecondaryButton";
+import main from "../img/main.jpeg";
 import ring1 from "../img/ring_orange.svg";
 import message1 from "../img/message_pink.svg";
 import message2 from "../img/message_blue.svg";
 import { Bounce, Fade } from "react-reveal";
 import AnimatedButton from "./AnimatedButton";
-import MainDashboard from "layouts/MainDashboard";
-import Projects from "layouts/dashboard/components/Projects";
+import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
+import MDBox from "components/MDBox";
+import { Grid } from "@mui/material";
 
 function HeaderContent() {
   return (
     <HeaderContentStyled>
       <Fade left cascade>
-        <div className="left-content">
+        <div className="">
           <div className="left-text-container">
             <h1>Smart Project Management for Success</h1>
             <p className="white">
@@ -29,7 +30,59 @@ function HeaderContent() {
       </Fade>
       <Fade right>
         <div className="right-content">
-          <Projects />
+          <MDBox mt={5}>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="dark"
+                icon="weekend"
+                title="Public Project"
+                count={0}
+                percentage={{
+                  color: "success",
+                  amount: 0,
+                  label: "added this week",
+                }}
+              />
+            </MDBox>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                icon="leaderboard"
+                title="Private Project"
+                count={0}
+                percentage={{
+                  color: "success",
+                  amount: 0,
+                  label: "created this week",
+                }}
+              />
+            </MDBox>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="success"
+                icon="store"
+                title="Files"
+                count={0}
+                percentage={{
+                  color: "success",
+                  amount: 0,
+                  label: "total size",
+                }}
+              />
+            </MDBox>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="primary"
+                icon="person_add"
+                title="Invites"
+                count={0}
+                percentage={{
+                  color: "success",
+                  amount: 0,
+                  label: "invites this week",
+                }}
+              />
+            </MDBox>
+          </MDBox>
           <img src={ring1} alt="" className="ring1" />
           <img src={message1} alt="" className="message1" />
           <img src={message2} alt="" className="message2" />
@@ -72,7 +125,11 @@ const HeaderContentStyled = styled.div`
     display: flex;
     justify-content: center;
     .phone {
-      width: 80%;
+      width: 70%;
+    }
+    .project {
+      position: absolute;
+      transition: all 0.4s ease-in-out;
     }
     .ring1 {
       position: absolute;

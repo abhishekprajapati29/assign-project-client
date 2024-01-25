@@ -37,10 +37,34 @@ function Header({
   const { darkMode } = controller;
   const [image, setImage] = useState(
     `${process.env.REACT_APP_BACKEND_URL}${
-      JSON.parse(localStorage.getItem("currentProfile"))?.userProfileId.userImage
+      JSON.parse(localStorage.getItem("currentProfile"))?.userProfileId
+        .userImage
     }`
   );
   const [file, setFile] = useState([]);
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Add a listener for changes to the screen size
+    const mediaQuery = window.matchMedia("(max-width: 500px)");
+
+    // Set the initial value of the `isMobile` state variable
+    setIsMobile(mediaQuery.matches);
+
+    // Define a callback function to handle changes to the media query
+    const handleMediaQueryChange = (event: any) => {
+      setIsMobile(event.matches);
+    };
+
+    // Add the callback function as a listener for changes to the media query
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
+
+    // Remove the listener when the component is unmounted
+    return () => {
+      mediaQuery.removeEventListener("change", handleMediaQueryChange);
+    };
+  }, []);
 
   const sidenavTypeButtonsStyles = ({
     functions: { pxToRem },
@@ -65,11 +89,15 @@ function Header({
     palette: { white, gradients, background },
   }) => ({
     height: pxToRem(39),
-    background: darkMode ? white.main : linearGradient(gradients.dark.main, gradients.dark.state),
+    background: darkMode
+      ? white.main
+      : linearGradient(gradients.dark.main, gradients.dark.state),
     color: darkMode ? background.sidenav : white.main,
 
     "&:hover, &:focus, &:focus:not(:hover)": {
-      background: darkMode ? white.main : linearGradient(gradients.dark.main, gradients.dark.state),
+      background: darkMode
+        ? white.main
+        : linearGradient(gradients.dark.main, gradients.dark.state),
       color: darkMode ? background.sidenav : white.main,
     },
   });
@@ -77,7 +105,10 @@ function Header({
   const setUploadFiles = async (files) => {
     const formData = new FormData();
     formData.append("userImage", files[0]);
-    formData.append("userId", JSON.parse(localStorage.getItem("currentUser"))._id);
+    formData.append(
+      "userId",
+      JSON.parse(localStorage.getItem("currentUser"))._id
+    );
     const userProfileInfo = await axios.patch(
       `${process.env.REACT_APP_BACKEND_URL}userProfile/${
         JSON.parse(localStorage.getItem("currentProfile"))?.userProfileId._id
@@ -90,7 +121,10 @@ function Header({
         },
       }
     );
-    localStorage.setItem("currentProfile", JSON.stringify(userProfileInfo.data));
+    localStorage.setItem(
+      "currentProfile",
+      JSON.stringify(userProfileInfo.data)
+    );
     setImage(
       `${process.env.REACT_APP_BACKEND_URL}${userProfileInfo.data?.userProfileId.userImage}`
     );
@@ -103,31 +137,41 @@ function Header({
   console.log(image);
   return (
     <MDBox position="relative" mb={5}>
-      <MDBox
-        display="flex"
-        alignItems="center"
-        position="relative"
-        minHeight="18.75rem"
-        borderRadius="xl"
-        sx={{
-          backgroundImage: ({ functions: { rgba, linearGradient }, palette: { gradients } }) =>
-            `${linearGradient(
-              rgba(gradients.info.main, 0.6),
-              rgba(gradients.info.state, 0.6)
-            )}, url(${backgroundImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "50%",
-          overflow: "hidden",
-        }}
-      />
+      {!isMobile && (
+        <MDBox
+          display="flex"
+          alignItems="center"
+          position="relative"
+          minHeight="18.75rem"
+          borderRadius="xl"
+          sx={{
+            backgroundImage: ({
+              functions: { rgba, linearGradient },
+              palette: { gradients },
+            }) =>
+              `${linearGradient(
+                rgba(gradients.info.main, 0.6),
+                rgba(gradients.info.state, 0.6)
+              )}, url(${backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "50%",
+            overflow: "hidden",
+          }}
+        />
+      )}
+
       <Card
-        sx={{
-          position: "relative",
-          mt: -8,
-          mx: 3,
-          py: 2,
-          px: 2,
-        }}
+        sx={
+          !isMobile
+            ? {
+                position: "relative",
+                mt: -8,
+                mx: 3,
+                py: 2,
+                px: 2,
+              }
+            : { position: "relative", py: 2, px: 2 }
+        }
       >
         <Grid container spacing={3} alignItems="center">
           <Grid item>
@@ -136,7 +180,10 @@ function Header({
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
               <MDTypography variant="h5" fontWeight="medium">
-                {JSON.parse(localStorage.getItem("currentProfile")).userProfileId.username}
+                {
+                  JSON.parse(localStorage.getItem("currentProfile"))
+                    .userProfileId.username
+                }
               </MDTypography>
               <MDBox display="flex" mt={0.5}>
                 {designationEdit ? (
@@ -148,7 +195,11 @@ function Header({
                     variant="standard"
                   />
                 ) : (
-                  <MDTypography variant="button" color="text" fontWeight="regular">
+                  <MDTypography
+                    variant="button"
+                    color="text"
+                    fontWeight="regular"
+                  >
                     {designation || ""}
                   </MDTypography>
                 )}
@@ -156,7 +207,10 @@ function Header({
                 <MDTypography variant="body2" color="secondary" ml={1}>
                   {designationEdit ? (
                     <Tooltip title={"Save"} placement="top">
-                      <Icon sx={{ textAlign: "center", cursor: "pointer" }} onClick={onSave}>
+                      <Icon
+                        sx={{ textAlign: "center", cursor: "pointer" }}
+                        onClick={onSave}
+                      >
                         save
                       </Icon>
                     </Tooltip>
@@ -166,7 +220,9 @@ function Header({
                       placement="top"
                       onClick={() => setDesignationEdit(!designationEdit)}
                     >
-                      <Icon sx={{ textAlign: "center", cursor: "pointer" }}>edit</Icon>
+                      <Icon sx={{ textAlign: "center", cursor: "pointer" }}>
+                        edit
+                      </Icon>
                     </Tooltip>
                   )}
                 </MDTypography>
@@ -185,7 +241,13 @@ function Header({
               <label htmlFor="fileInput">
                 <MDTypography variant="body2" color="secondary" ml={1}>
                   <Tooltip title={"Change Profile Image"} placement="top">
-                    <Icon sx={{ textAlign: "center", cursor: "pointer", marginRight: "1rem" }}>
+                    <Icon
+                      sx={{
+                        textAlign: "center",
+                        cursor: "pointer",
+                        marginRight: "1rem",
+                      }}
+                    >
                       edit
                     </Icon>
                   </Tooltip>

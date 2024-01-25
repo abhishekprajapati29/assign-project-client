@@ -25,11 +25,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 function Overview() {
-  const userProfile = JSON.parse(localStorage.getItem("currentProfile"))?.userProfileId;
+  const userProfile = JSON.parse(
+    localStorage.getItem("currentProfile")
+  )?.userProfileId;
   const [aboutMe, setAboutMe] = useState(userProfile?.aboutMe || "");
   const [fullName, setFullName] = useState(userProfile?.username || "");
   const [email, setEmail] = useState(userProfile?.email || "");
-  const [designation, setDesignation] = useState(userProfile?.designation || "");
+  const [designation, setDesignation] = useState(
+    userProfile?.designation || ""
+  );
   const [enableEdit, setEnableEdit] = useState(false);
   const [designationEdit, setDesignationEdit] = useState(false);
 
@@ -51,7 +55,10 @@ function Overview() {
         },
       }
     );
-    localStorage.setItem("currentProfile", JSON.stringify(userProfileInfo.data));
+    localStorage.setItem(
+      "currentProfile",
+      JSON.stringify(userProfileInfo.data)
+    );
     setDesignationEdit(false);
     setEnableEdit(false);
   };
